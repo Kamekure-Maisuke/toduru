@@ -465,3 +465,50 @@ class PutController extends Controller
 ```shell
 sail artisan make:controller Toduru/DeleteController --invokable
 ```
+
+- `web.php`に以下を追加
+
+```php
+Route::delete('/toduru/delete/{sampleId}',\App\Http\Controllers\Sample\DeleteController::class)->name('sample.delete');
+```
+
+- DeleteControllerに以下を追加
+
+```php
+<?php
+
+namespace App\Http\Controllers\Sample;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use App\Models\Sample;
+
+class DeleteController extends Controller
+{
+    /**
+     * Handle the incoming request.
+     */
+    public function __invoke(Request $request)
+    {
+        $sampleId = (int) $request->route('sampleId');
+        Sample::destroy($sampleId);
+        return redirect()
+        ->route('sample.index')
+        ->with('feedback.success', "削除しました。");
+    }
+}
+```
+
+- viewに削除部分を追加して完了。
+    - こちらも同様にformタグ内のmethodはpost。@methodはDELETE。
+
+```php
+<form
+    action="{{ route('sample.delete', ['sampleId' => $sample->id]) }}"
+    method="post"
+>
+    @method('DELETE')
+    @csrf
+    <button type="submit">削除</button>
+</form>
+```
