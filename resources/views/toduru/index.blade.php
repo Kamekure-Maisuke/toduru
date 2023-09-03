@@ -7,19 +7,21 @@
     <title>Document</title>
 </head>
 <body>
-    <h2>新規作成</h2>
-    @if (session('feedback.success'))
-    <p style="color: green">{{ session('feedback.success') }}</p>
-    @endif
-    <form action="{{ route('toduru.create') }}" method="post">
-        @csrf
-        <label for="toduru-content">TODURU</label>
-        <textarea name="toduru" id="toduru-content"></textarea>
-        @error('toduru')
-        <p style="color: red">{{ $message }}</p>
-        @enderror
-        <button type="submit">作成</button>
-    </form>
+    @auth
+        <h2>新規作成</h2>
+        @if (session('feedback.success'))
+        <p style="color: green">{{ session('feedback.success') }}</p>
+        @endif
+        <form action="{{ route('toduru.create') }}" method="post">
+            @csrf
+            <label for="toduru-content">TODURU</label>
+            <textarea name="toduru" id="toduru-content"></textarea>
+            @error('toduru')
+            <p style="color: red">{{ $message }}</p>
+            @enderror
+            <button type="submit">作成</button>
+        </form>
+    @endauth
     @foreach ($todurus as $toduru)
         <div>
             {{ $toduru->content }}
