@@ -512,3 +512,46 @@ class DeleteController extends Controller
     <button type="submit">削除</button>
 </form>
 ```
+
+## ログイン機能
+- laravel breezeを利用。
+
+```shell
+# 追加
+sail composer require laravel/breeze --dev
+
+# インストール及び必要コード生成
+# ※以下のコマンドでroute/web.phpの内容が消去されるので事前に内容をコピー
+sail artisan breeze:install
+
+# nodeパッケージインストール
+sail npm install
+
+# サーバー起動
+sail npm run dev
+```
+
+- index画面に「Login」「Register」ボタンが表示される。
+- Registerで登録すれば、簡易的なユーザー登録でログインができる。
+- ログイン後は`/dashboard`に遷移。
+- ログイン後に一覧ページに遷移させるため、`app/Providers/RouteServiceProvider.php`の以下を修正。
+
+```php
+public const HOME = '/toduru';
+```
+
+- ログインして確認。
+- 次に未ログインの人が作成できないように`web.php`のpostメソッドに以下を追加。
+
+```php
+Route::post('/toduru/create',\App\Http\Controllers\Toduru\CreateController::class)
+    ->middleware('auth')
+    ->name('toduru.create');
+```
+- view(``)に以下も追加して未ログイン者は一覧も見れないようにする。
+
+```php
+@auth
+// HTML内容
+@endauth
+```
